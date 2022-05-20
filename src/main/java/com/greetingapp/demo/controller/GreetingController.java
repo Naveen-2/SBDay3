@@ -1,25 +1,73 @@
 package com.greetingapp.demo.controller;
 
 import com.greetingapp.demo.model.Greeting;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import com.greetingapp.demo.model.User;
+import com.greetingapp.demo.service.IGreetingService;
 
-import java.util.concurrent.atomic.AtomicLong;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
+@RequestMapping("/greeting")
 public class GreetingController {
-    private static final String template = "Hello %s %s!";
-    private final AtomicLong counter = new AtomicLong();
+	 	
+		@Autowired
+	    private IGreetingService greetingService;
 
-    @GetMapping("/greeting")
-    public Greeting greeting (@RequestParam(value = "firstName", defaultValue = "") String firstName,
-    							@RequestParam(value = "lastName", defaultValue = "") String lastName) {
-    	String defaultText1 = "World", defaultText2 = "";
-    	if(firstName.contentEquals("") && lastName.contentEquals("")) {
-    		return new Greeting(counter.incrementAndGet(), String.format(template, defaultText1, defaultText2));
-    	}
-        return new Greeting(counter.incrementAndGet(), String.format(template, firstName, lastName));
-    }
-    
+		/**
+	     * Method: GET
+	     * URL: http://localhost:8081/greeting/{id}
+	     * @param id
+	     * @return { "id": value, "message": value }
+	     */
+	    @GetMapping("/{id}")
+	    public Greeting greetUser(@PathVariable(value="id") Long id) {
+	        return greetingService.getGreetingById(id);
+	    }
+	    
+	    /**
+	     * Method: GET
+	     * URL: http://localhost:8081/greeting/
+	     * @return JSON Object
+	     */
+	    @GetMapping("/")
+	    public List<Greeting> getGreetings() {
+	        return greetingService.getGreetings();
+	    }
+	    
+	    /**
+	     * Method: DELETE
+	     * URL: http://localhost:8081/greeting/{id}
+	     * @param id
+	     * @return boolean
+	     */
+	    @DeleteMapping("/{id}")
+	    public Boolean deleteGreeting(@PathVariable(value="id") Long id) {
+	        return greetingService.deleteGreeting(id);
+	    }
+
+	    /**
+	     * Method: POST
+	     * URL: http://localhost:8081/greeting/
+	     * @param user
+	     * @return { "id": value, "message": value }
+	     */
+	    @PostMapping("/")
+	    public Greeting createGreeting(@RequestBody User user) {
+	        return greetingService.addGreeting(user);
+	    }
+
+	    /**
+	     * Method: PUT
+	     * URL: http://localhost:8081/greeting/{id}
+	     * @param id
+	     * @param user
+	     * @return
+	     */
+	    @PutMapping("/{id}")
+	    public Greeting updateGreeting(@PathVariable(value="id") Long id, @RequestBody User user) {
+	        return greetingService.updateGreeting(id, user);
+	    }
 }

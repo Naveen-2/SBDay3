@@ -1,10 +1,22 @@
 package com.greetingapp.demo.model;
 
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+
+@Entity
 public class Greeting {
 	
-	private String message;
+	@Id
+	@GeneratedValue(strategy = GenerationType.AUTO)
     private long id;
+	private String message;
 
+	public Greeting() {
+        super();
+    }
+	
     public  Greeting(long id, String message) {
         this.id = id;
         this.message = message;
@@ -24,5 +36,13 @@ public class Greeting {
 
     public void setId(Integer id) {
         this.id = id;
+    }
+    
+    @Override
+    public String toString() {
+        return "Greeting{" +
+                "message='" + message + '\'' +
+                ", id=" + id +
+                '}';
     }
 }
